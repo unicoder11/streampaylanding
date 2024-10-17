@@ -182,7 +182,7 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                With a team of experienced professionals and state-of-the-art technology, we're committed to delivering innovative services that streamline financial operations and drive growth for our clients.
+                With a team of experienced professionals and state-of-the-art technology, we&apos;'re committed to delivering innovative services that streamline financial operations and drive growth for our clients.
               </motion.p>
             </div>
           </section>
