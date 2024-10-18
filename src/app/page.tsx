@@ -11,20 +11,20 @@ export default function Home() {
 
   const services = [
     {
-      title: "Real-Time Payments",
-      description: "Instant fund transfers 24/7, enabling immediate settlement and improving cash flow management."
+      title: "Processing Services",
+      description: "Cards and payment processing services depending on your licenses and region: cards issuing and acquiring programs, ATM and POS networks processing, e-commerce processing, crypto currencies operations processing."
     },
     {
-      title: "Digital Banking Platform",
-      description: "Comprehensive online and mobile banking solutions for a seamless digital experience."
+      title: "Consulting Services",
+      description: "MasterCard and VISA Membership (Business plan and Technological scenario), Payment system organization, Processing center and Chip bureau/ CV creation, PCI DSS documentation, ATM and POS networks, e-commerce projects."
     },
     {
-      title: "Payment Gateway Integration",
-      description: "Secure and efficient payment processing for e-commerce and point-of-sale transactions."
+      title: "Software as a Service",
+      description: "Providing our software as a service [SaaS] without license purchase and without license fees."
     },
     {
-      title: "Financial Analytics",
-      description: "Advanced data analytics and reporting tools to gain insights into financial performance and customer behavior."
+      title: "Software Services",
+      description: "Software sale, development, implementation and support for processing and payment products."
     }
   ]
 
@@ -94,7 +94,8 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  Real Time<br />Payments
+                  We implement and support<br /> processing and banking products
+                  {/* Real Time<br />Payments */}
                 </motion.h1>
                 <motion.p 
                   className="max-w-md mx-auto text-xl text-gray-600 mb-8 text-center"
@@ -102,7 +103,8 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  Receive funds into your account instantly and cost-effectively 24/7
+                  Software sale, development, implementation and support for processing and payment products.
+                  
                 </motion.p>
                 <motion.div 
                   className="text-center"
@@ -172,8 +174,19 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
-              >
-                StreamPay is a cutting-edge financial technology company dedicated to revolutionizing the way businesses handle payments and banking. Our mission is to provide seamless, efficient, and secure financial solutions that empower businesses to thrive in the digital economy.
+              > 
+                With StreamPay Processing solutions we accumulated 25 years experience of our team with MasterCard and VISA projects implementation for banks and financial institutions around the world.
+
+
+{/* In 1989 we start our history with a CardCenter MasterCard/ Europay Int. MSP creation in Moscow, with a first international MasterCard card issuing in post URSS territory.
+
+In 1994 we established first ATM network and connected first POS terminal in the Russian Federation. */}
+
+
+
+{/* ALFEBA Processing solutions is presented by StreamPay S.A. with a headquarter in Montevideo, Uruguay. */}
+
+                {/* StreamPay is a cutting-edge financial technology company dedicated to revolutionizing the way businesses handle payments and banking. Our mission is to provide seamless, efficient, and secure financial solutions that empower businesses to thrive in the digital economy. */}
               </motion.p>
               <motion.p 
                 className="text-xl text-gray-600 mb-8 text-center"
@@ -182,7 +195,34 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                With a team of experienced professionals and state-of-the-art technology, we are committed to delivering innovative services that streamline financial operations and drive growth for our clients.
+                From the beginning of nineties of the IX we work under the Third Party processing centers creation, Banks-principal members of the MasterCard and VISA payment system licensing, ATM and POS networks organization and processing.
+                </motion.p>
+                <motion.p 
+                className="text-xl text-gray-600 mb-8 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                Since 1994 we processed more than 50 banks principal members of VISA and MasterCard, like ABN AMRO AO, Dresdner bank AO, GarantiBank AO, Sberbank of Russia, URALSIB Bank, Promsvyazbank and other banks and financial institutions in America, Europe and Asia.                
+                </motion.p> 
+                <motion.p 
+                className="text-xl text-gray-600 mb-8 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                Since our foundation we were improving our development strategy, changing our brands and trademarks. The basis of the business was a multi banking processing platform, from which the e-commerce platform was born about ten years ago.
+              </motion.p> 
+              <motion.p 
+                className="text-xl text-gray-600 mb-8 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                Since 2010 we started implementing our solutions with AWS AMAZON PCI DSS certified cloud, decreasing implementation costs for our customers and accelerating the implementation process.
               </motion.p>
             </div>
           </section>
