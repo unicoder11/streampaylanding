@@ -204,7 +204,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                Since 1994 we processed more than 50 banks principal members of VISA and MasterCard, like ABN AMRO AO, Dresdner bank AO, GarantiBank AO, Sberbank of Russia, URALSIB Bank, Promsvyazbank and other banks and financial institutions in America, Europe and Asia.                
+                Since 1994 we processed more than 50 banks principal members of VISA and MasterCard, like ABN AMRO AO, Dresdner bank AO, GarantiBank AO and other banks and financial institutions in America, Europe and Asia.                
                 </motion.p> 
                 <motion.p 
                 className="text-xl text-gray-600 mb-8 text-center"
