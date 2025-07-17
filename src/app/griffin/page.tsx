@@ -64,7 +64,7 @@ export default function GriffinPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  Griffin Research<br />Digital Bank-in-a-Box
+                  Griffin<br />Digital Bank-in-a-Box
                 </motion.h1>
                 <motion.p 
                   className="max-w-md mx-auto text-xl text-gray-600 mb-8 text-center"
