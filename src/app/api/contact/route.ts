@@ -2,115 +2,116 @@ import { NextRequest, NextResponse } from 'next/server'
 import sgMail from '@sendgrid/mail'
 
 // Configurar SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY || '')
+if (!process.env.SENDGRID_API_KEY) {
+  throw new Error('SENDGRID_API_KEY no está configurada')
+}
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+interface ContactFormData {
+  name: string
+  email: string
+  message: string
+}
+
+interface SendGridError {
+  code?: number
+  message?: string
+  response?: {
+    body?: {
+      errors?: Array<{
+        message: string
+        field?: string
+      }>
+    }
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    // Verificar que las variables de entorno estén configuradas
-    if (!process.env.SENDGRID_API_KEY) {
-      return NextResponse.json(
-        { error: 'SendGrid API Key no configurada' },
-        { status: 500 }
-      )
-    }
-
-    const { name, email, message } = await request.json()
-
+    const { name, email, message }: ContactFormData = await request.json()
+    
     // Validación básica
     if (!name || !email || !message) {
       return NextResponse.json(
-        { error: 'Todos los campos son obligatorios' },
+        { error: 'Todos los campos son requeridos' },
         { status: 400 }
       )
     }
 
-    // Validación de email
+    // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: 'Email inválido' },
+        { error: 'Formato de email inválido' },
         { status: 400 }
       )
     }
 
-    // Configuración del mensaje para SendGrid
-    const mailOptions = {
-      to: 'nicolas.dotti@streampay.com',
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@example.com',
-      subject: `Nuevo mensaje de contacto desde StreamPay - ${name}`,
+    const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'noreply@essencial.cc'
+    const toEmail = 'nicolas.dotti@streampay.com'
+
+    const msg = {
+      to: toEmail,
+      from: fromEmail,
+      subject: `Nuevo mensaje de contacto de ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333; border-bottom: 2px solid #000; padding-bottom: 10px;">
-            Nuevo mensaje de contacto
+          <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+            📧 Nuevo mensaje de contacto - StreamPay
           </h2>
           
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #555; margin-bottom: 15px;">Información del contacto:</h3>
-            <p><strong>Nombre:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 0 0 10px 0;"><strong>👤 Nombre:</strong> ${name}</p>
+            <p style="margin: 0 0 10px 0;"><strong>📧 Email:</strong> ${email}</p>
+            <p style="margin: 0 0 10px 0;"><strong>⏰ Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
           </div>
           
-          <div style="background-color: #fff; padding: 20px; border-left: 4px solid #000; margin: 20px 0;">
-            <h3 style="color: #555; margin-bottom: 15px;">Mensaje:</h3>
-            <p style="line-height: 1.6; color: #666;">${message}</p>
+          <div style="background-color: #fff; padding: 20px; border-left: 4px solid #007bff; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0;">💬 Mensaje:</h3>
+            <p style="line-height: 1.6; color: #555;">${message}</p>
           </div>
           
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #999;">
-            <p>Este mensaje fue enviado desde el formulario de contacto de StreamPay.</p>
-            <p>Fecha: ${new Date().toLocaleString('es-ES')}</p>
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
+            <p>Este mensaje fue enviado desde el formulario de contacto de StreamPay</p>
           </div>
         </div>
       `,
-      text: `
-        Nuevo mensaje de contacto desde StreamPay
-        
-        Nombre: ${name}
-        Email: ${email}
-        
-        Mensaje:
-        ${message}
-        
-        Enviado el: ${new Date().toLocaleString('es-ES')}
-      `
     }
 
     console.log('Enviando email con configuración:', {
-      to: mailOptions.to,
-      from: mailOptions.from,
-      subject: mailOptions.subject,
+      to: msg.to,
+      from: msg.from,
+      subject: msg.subject,
       apiKeySet: !!process.env.SENDGRID_API_KEY
     })
 
-    // Enviar el email con SendGrid
-    await sgMail.send(mailOptions)
-
+    await sgMail.send(msg)
+    console.log('✅ Email enviado exitosamente')
+    
     return NextResponse.json(
       { message: 'Mensaje enviado exitosamente' },
       { status: 200 }
     )
-
-  } catch (error: any) {
-    console.error('Error enviando email:', error)
+  } catch (error) {
+    console.error('❌ Error enviando email:', error)
     
-    // Manejo específico para errores de SendGrid
-    if (error.response) {
-      console.error('SendGrid Error Details:', error.response.body)
-      
-      // Verificar si es un error de email no verificado
-      if (error.response.body?.errors?.[0]?.message?.includes('verified')) {
-        return NextResponse.json(
-          { error: 'El email de envío no está verificado en SendGrid' },
-          { status: 400 }
-        )
-      }
-      
-      // Verificar si es un error de API key
-      if (error.code === 403) {
-        return NextResponse.json(
-          { error: 'API Key de SendGrid inválida o sin permisos' },
-          { status: 403 }
-        )
-      }
+    const sendGridError = error as SendGridError
+    
+    // Manejo específico de errores de SendGrid
+    if (sendGridError.code === 403) {
+      return NextResponse.json(
+        { error: 'Error de autenticación con SendGrid. Verifica que el dominio esté verificado.' },
+        { status: 500 }
+      )
+    }
+    
+    if (sendGridError.response?.body?.errors) {
+      const errorMessage = sendGridError.response.body.errors[0]?.message || 'Error de SendGrid'
+      return NextResponse.json(
+        { error: `Error de SendGrid: ${errorMessage}` },
+        { status: 500 }
+      )
     }
     
     return NextResponse.json(

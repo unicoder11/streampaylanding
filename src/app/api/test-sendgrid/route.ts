@@ -1,57 +1,67 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import sgMail from '@sendgrid/mail'
 
 // Configurar SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY || '')
+if (!process.env.SENDGRID_API_KEY) {
+  throw new Error('SENDGRID_API_KEY no está configurada')
+}
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+interface SendGridError {
+  code?: number
+  message?: string
+  response?: {
+    body?: {
+      errors?: Array<{
+        message: string
+        field?: string
+      }>
+    }
+  }
+}
 
 export async function GET() {
   try {
-    // Verificar que las variables de entorno estén configuradas
-    if (!process.env.SENDGRID_API_KEY) {
-      return NextResponse.json(
-        { error: 'SendGrid API Key no configurada' },
-        { status: 500 }
-      )
-    }
+    const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'noreply@essencial.cc'
+    const toEmail = 'nicolas.dotti@streampay.com'
 
-    // Mensaje de prueba simple
-    const testMessage = {
-      to: 'nicolas.dotti@streampay.com',
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@example.com',
-      subject: 'Test de SendGrid - StreamPay',
-      text: 'Este es un mensaje de prueba para verificar que SendGrid funciona correctamente.',
+    const msg = {
+      to: toEmail,
+      from: fromEmail,
+      subject: '🧪 Test de SendGrid - StreamPay',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Test de SendGrid</h2>
-          <p>Este es un mensaje de prueba para verificar que SendGrid funciona correctamente.</p>
-          <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
-        </div>
-      `
+        <h2>✅ Test de SendGrid Exitoso</h2>
+        <p>Este es un email de prueba enviado desde el endpoint de test.</p>
+        <p><strong>Configuración:</strong></p>
+        <ul>
+          <li>From: ${fromEmail}</li>
+          <li>To: ${toEmail}</li>
+          <li>Fecha: ${new Date().toLocaleString('es-ES')}</li>
+        </ul>
+      `,
     }
 
-    // Intentar enviar el email
-    await sgMail.send(testMessage)
-
-    return NextResponse.json(
-      { 
-        message: 'Test enviado exitosamente',
-        from: process.env.SENDGRID_FROM_EMAIL,
-        apiKeySet: !!process.env.SENDGRID_API_KEY
-      },
-      { status: 200 }
-    )
-
-  } catch (error: any) {
-    console.error('Error en test de SendGrid:', error)
+    await sgMail.send(msg)
     
-    return NextResponse.json(
-      { 
-        error: 'Error en SendGrid',
-        details: error.message,
-        code: error.code,
-        response: error.response?.body
-      },
-      { status: 500 }
-    )
+    return NextResponse.json({
+      success: true,
+      message: 'Test email enviado exitosamente',
+      config: {
+        from: fromEmail,
+        to: toEmail
+      }
+    })
+  } catch (error) {
+    console.error('❌ Error en test de SendGrid:', error)
+    
+    const sendGridError = error as SendGridError
+    
+    return NextResponse.json({
+      success: false,
+      error: sendGridError.message || 'Error desconocido',
+      code: sendGridError.code,
+      details: sendGridError.response?.body?.errors || null
+    }, { status: 500 })
   }
 }
