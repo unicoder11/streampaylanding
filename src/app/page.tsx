@@ -168,7 +168,7 @@ export default function Home() {
           </section>
 
           {/* Services Section */}
-          <section id="services" className="py-20 bg-gray-50">
+          <section id="services" className="py-20 bg-white">
             <motion.h2 
               className="text-4xl font-bold mb-12 text-center"
               initial={{ opacity: 0, y: 20 }}
