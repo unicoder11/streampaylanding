@@ -14,12 +14,22 @@ interface ContactFormData {
   message: string
 }
 
+interface DynamicTemplateData {
+  name: string
+  email: string
+  message: string
+  date: string
+  timestamp: string
+  year: number
+  source: string
+}
+
 interface SendGridDynamicMessage {
   to: string
   from: string
   subject: string
   templateId: string
-  dynamicTemplateData: Record<string, any>
+  dynamicTemplateData: DynamicTemplateData
 }
 
 interface SendGridError {
