@@ -83,7 +83,27 @@ export default function Home() {
         >
           <div className="text-2xl font-semibold">StreamPay</div>
           <nav className="hidden md:flex space-x-8">
-            {['Home', 'Services', 'About', 'Contact'].map((item) => (
+            {['Home', 'Services'].map((item) => (
+              <motion.a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className={`text-sm ${activeNav === item ? 'font-medium' : 'text-gray-500 hover:text-gray-900'}`}
+                onClick={() => setActiveNav(item)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {item}
+              </motion.a>
+            ))}
+            <motion.a
+              href="/griffin"
+              className="text-sm text-gray-500 hover:text-gray-900"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Griffin
+            </motion.a>
+            {['About', 'Contact'].map((item) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
