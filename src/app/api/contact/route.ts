@@ -14,6 +14,14 @@ interface ContactFormData {
   message: string
 }
 
+interface SendGridDynamicMessage {
+  to: string
+  from: string
+  subject: string
+  templateId: string
+  dynamicTemplateData: Record<string, any>
+}
+
 interface SendGridError {
   code?: number
   message?: string
@@ -50,40 +58,45 @@ export async function POST(request: NextRequest) {
 
     const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'noreply@essencial.cc'
     const toEmail = 'nicolas.dotti@streampay.com'
+    const templateId = process.env.SENDGRID_TEMPLATE_ID
 
-    const msg = {
+    // Verificar que el template ID esté configurado
+    if (!templateId) {
+      throw new Error('SENDGRID_TEMPLATE_ID no está configurada')
+    }
+
+    const msg: SendGridDynamicMessage = {
       to: toEmail,
       from: fromEmail,
-      subject: `Nuevo mensaje de contacto de ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
-            📧 Nuevo mensaje de contacto - StreamPay
-          </h2>
-          
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 0 0 10px 0;"><strong>👤 Nombre:</strong> ${name}</p>
-            <p style="margin: 0 0 10px 0;"><strong>📧 Email:</strong> ${email}</p>
-            <p style="margin: 0 0 10px 0;"><strong>⏰ Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
-          </div>
-          
-          <div style="background-color: #fff; padding: 20px; border-left: 4px solid #007bff; margin: 20px 0;">
-            <h3 style="color: #333; margin-top: 0;">💬 Mensaje:</h3>
-            <p style="line-height: 1.6; color: #555;">${message}</p>
-          </div>
-          
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
-            <p>Este mensaje fue enviado desde el formulario de contacto de StreamPay</p>
-          </div>
-        </div>
-      `,
+      subject: `New contact message from ${name}`,
+      
+      // Usar template dinámico de SendGrid
+      templateId: templateId,
+      
+      // Datos dinámicos para el template
+      dynamicTemplateData: {
+        name: name,
+        email: email,
+        message: message,
+        date: new Date().toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        timestamp: new Date().toLocaleString('en-US'),
+        year: new Date().getFullYear(),
+        source: 'StreamPay Contact Form'
+      }
     }
 
     console.log('Enviando email con configuración:', {
       to: msg.to,
       from: msg.from,
       subject: msg.subject,
-      apiKeySet: !!process.env.SENDGRID_API_KEY
+      templateId: msg.templateId,
+      apiKeySet: !!process.env.SENDGRID_API_KEY,
+      templateIdSet: !!process.env.SENDGRID_TEMPLATE_ID
     })
 
     await sgMail.send(msg)
