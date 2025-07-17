@@ -39,6 +39,14 @@ export default function Home() {
     }
   ]
 
+  // Función para hacer scroll hacia la sección de contacto
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact')
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   // Funciones para manejar el formulario
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -172,7 +180,10 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
                 >
-                  <Button className="bg-black text-white hover:bg-gray-800 rounded-full px-8 py-3 text-lg font-medium">
+                  <Button 
+                    onClick={scrollToContact}
+                    className="bg-black text-white hover:bg-gray-800 rounded-full px-8 py-3 text-lg font-medium"
+                  >
                     Get Started
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
