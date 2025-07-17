@@ -346,13 +346,13 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 
                 {/* Status messages */}
                 {submitStatus === 'success' && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="p-4 bg-green-50 border border-green-200 rounded-lg"
                   >
                     <p className="text-green-800 text-center font-medium">
-                      Message sent successfully! We'll contact you soon.
+                      Message sent successfully! We&apos;ll contact you soon.
                     </p>
                   </motion.div>
                 )}
