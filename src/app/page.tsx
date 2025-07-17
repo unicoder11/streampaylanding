@@ -313,7 +313,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 <Input 
                   type="text" 
                   name="name"
-                  placeholder="Tu Nombre" 
+                  placeholder="Your Name" 
                   value={formData.name}
                   onChange={handleInputChange}
                   required
@@ -322,7 +322,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 <Input 
                   type="email" 
                   name="email"
-                  placeholder="Tu Email" 
+                  placeholder="Your Email" 
                   value={formData.email}
                   onChange={handleInputChange}
                   required
@@ -330,7 +330,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 />
                 <Textarea 
                   name="message"
-                  placeholder="Tu Mensaje" 
+                  placeholder="Your Message" 
                   value={formData.message}
                   onChange={handleInputChange}
                   required
@@ -341,10 +341,10 @@ In 1994 we established first ATM network and connected first POS terminal in the
                   disabled={isSubmitting}
                   className="w-full bg-black text-white hover:bg-gray-800 rounded-full py-3 text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
                 
-                {/* Mensajes de estado */}
+                {/* Status messages */}
                 {submitStatus === 'success' && (
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -352,7 +352,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                     className="p-4 bg-green-50 border border-green-200 rounded-lg"
                   >
                     <p className="text-green-800 text-center font-medium">
-                      ¡Mensaje enviado exitosamente! Te contactaremos pronto.
+                      Message sent successfully! We'll contact you soon.
                     </p>
                   </motion.div>
                 )}
@@ -364,7 +364,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                     className="p-4 bg-red-50 border border-red-200 rounded-lg"
                   >
                     <p className="text-red-800 text-center font-medium">
-                      Error enviando el mensaje. Por favor, intenta de nuevo.
+                      Error sending message. Please try again.
                     </p>
                   </motion.div>
                 )}
