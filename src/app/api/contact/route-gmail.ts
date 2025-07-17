@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import sgMail from '@sendgrid/mail'
-
-// Configurar SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY || '')
+import nodemailer from 'nodemailer'
 
 export async function POST(request: NextRequest) {
   try {
-    // Verificar que las variables de entorno estén configuradas
-    if (!process.env.SENDGRID_API_KEY) {
-      return NextResponse.json(
-        { error: 'SendGrid API Key no configurada' },
-        { status: 500 }
-      )
-    }
-
     const { name, email, message } = await request.json()
 
     // Validación básica
@@ -33,10 +22,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Configuración del mensaje para SendGrid
+    // Configuración del transporter para Gmail
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    })
+
+    // Configuración del email
     const mailOptions = {
+      from: process.env.GMAIL_USER,
       to: 'nicolas.dotti@streampay.com',
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@example.com',
       subject: `Nuevo mensaje de contacto desde StreamPay - ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -61,58 +59,18 @@ export async function POST(request: NextRequest) {
           </div>
         </div>
       `,
-      text: `
-        Nuevo mensaje de contacto desde StreamPay
-        
-        Nombre: ${name}
-        Email: ${email}
-        
-        Mensaje:
-        ${message}
-        
-        Enviado el: ${new Date().toLocaleString('es-ES')}
-      `
     }
 
-    console.log('Enviando email con configuración:', {
-      to: mailOptions.to,
-      from: mailOptions.from,
-      subject: mailOptions.subject,
-      apiKeySet: !!process.env.SENDGRID_API_KEY
-    })
-
-    // Enviar el email con SendGrid
-    await sgMail.send(mailOptions)
+    // Enviar el email
+    await transporter.sendMail(mailOptions)
 
     return NextResponse.json(
       { message: 'Mensaje enviado exitosamente' },
       { status: 200 }
     )
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error enviando email:', error)
-    
-    // Manejo específico para errores de SendGrid
-    if (error.response) {
-      console.error('SendGrid Error Details:', error.response.body)
-      
-      // Verificar si es un error de email no verificado
-      if (error.response.body?.errors?.[0]?.message?.includes('verified')) {
-        return NextResponse.json(
-          { error: 'El email de envío no está verificado en SendGrid' },
-          { status: 400 }
-        )
-      }
-      
-      // Verificar si es un error de API key
-      if (error.code === 403) {
-        return NextResponse.json(
-          { error: 'API Key de SendGrid inválida o sin permisos' },
-          { status: 403 }
-        )
-      }
-    }
-    
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

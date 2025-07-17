@@ -18,7 +18,7 @@ Para que el formulario funcione, necesitas configurar las credenciales de SendGr
 2. **Edita `.env.local` con tus credenciales:**
    ```env
    SENDGRID_API_KEY=SG.tu_api_key_aqui
-   SENDGRID_FROM_EMAIL=noreply@streampay.com
+   SENDGRID_FROM_EMAIL=noreply@essencial.cc
    ```
 
 ### 2. Configurar SendGrid (Configuración Actual)
@@ -29,8 +29,8 @@ Para usar SendGrid:
 2. Ir a **Settings** → **API Keys**
 3. Crear una nueva API Key con permisos de **Mail Send**
 4. Copiar la API Key y usarla en `SENDGRID_API_KEY`
-5. Verificar el dominio en **Settings** → **Sender Authentication**
-6. Usar el email verificado en `SENDGRID_FROM_EMAIL`
+5. Verificar el dominio **essencial.cc** en **Settings** → **Sender Authentication**
+6. Los emails se enviarán desde `noreply@essencial.cc`
 
 ### 3. Alternativa con Gmail
 
