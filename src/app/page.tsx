@@ -1,10 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import Link from 'next/link'
+import { sendContactEmail } from '@/lib/emailjs'
 
 export default function Home() {
   const [activeNav, setActiveNav] = useState('Home')
@@ -50,18 +52,13 @@ export default function Home() {
     setSubmitStatus(null)
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      if (response.ok) {
+      const result = await sendContactEmail(formData)
+      
+      if (result.success) {
         setSubmitStatus('success')
         setFormData({ name: '', email: '', message: '' })
       } else {
+        console.error('EmailJS Error:', result.error)
         setSubmitStatus('error')
       }
     } catch (error) {
