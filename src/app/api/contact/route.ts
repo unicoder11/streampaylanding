@@ -100,22 +100,42 @@ export async function POST(request: NextRequest) {
     
     // Manejo específico de errores de SendGrid
     if (sendGridError.code === 403) {
+      console.error('🚨 Dominio no verificado en SendGrid')
       return NextResponse.json(
-        { error: 'Error de autenticación con SendGrid. Verifica que el dominio esté verificado.' },
+        { 
+          error: 'Configuración de email pendiente',
+          message: 'El sistema de contacto está en configuración. Por favor, contacta directamente a nicolas.dotti@streampay.com'
+        },
         { status: 500 }
       )
     }
     
     if (sendGridError.response?.body?.errors) {
       const errorMessage = sendGridError.response.body.errors[0]?.message || 'Error de SendGrid'
+      console.error('SendGrid Error:', errorMessage)
+      
+      // Si es error de dominio no verificado
+      if (errorMessage.includes('verified') || errorMessage.includes('domain')) {
+        return NextResponse.json(
+          { 
+            error: 'Configuración de email pendiente',
+            message: 'El sistema de contacto está en configuración. Por favor, contacta directamente a nicolas.dotti@streampay.com'
+          },
+          { status: 500 }
+        )
+      }
+      
       return NextResponse.json(
-        { error: `Error de SendGrid: ${errorMessage}` },
+        { error: `Error de email: ${errorMessage}` },
         { status: 500 }
       )
     }
     
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { 
+        error: 'Error interno del servidor',
+        message: 'Por favor, contacta directamente a nicolas.dotti@streampay.com'
+      },
       { status: 500 }
     )
   }
