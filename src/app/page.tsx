@@ -8,6 +8,16 @@ import { Textarea } from "@/components/ui/textarea"
 
 export default function Home() {
   const [activeNav, setActiveNav] = useState('Home')
+  
+  // Estados para el formulario de contacto
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  })
+  
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null)
 
   const services = [
     {
@@ -27,6 +37,40 @@ export default function Home() {
       description: "Software sale, development, implementation and support for processing and payment products."
     }
   ]
+
+  // Funciones para manejar el formulario
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus(null)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setFormData({ name: '', email: '', message: '' })
+      } else {
+        setSubmitStatus('error')
+      }
+    } catch (error) {
+      console.error('Error enviando formulario:', error)
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
@@ -245,13 +289,65 @@ In 1994 we established first ATM network and connected first POS terminal in the
               transition={{ duration: 0.5, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <form className="space-y-6">
-                <Input type="text" placeholder="Your Name" />
-                <Input type="email" placeholder="Your Email" />
-                <Textarea placeholder="Your Message" />
-                <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-full py-3 text-lg font-medium">
-                  Send Message
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <Input 
+                  type="text" 
+                  name="name"
+                  placeholder="Tu Nombre" 
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  disabled={isSubmitting}
+                />
+                <Input 
+                  type="email" 
+                  name="email"
+                  placeholder="Tu Email" 
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  disabled={isSubmitting}
+                />
+                <Textarea 
+                  name="message"
+                  placeholder="Tu Mensaje" 
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  disabled={isSubmitting}
+                />
+                <Button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-black text-white hover:bg-gray-800 rounded-full py-3 text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
                 </Button>
+                
+                {/* Mensajes de estado */}
+                {submitStatus === 'success' && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-4 bg-green-50 border border-green-200 rounded-lg"
+                  >
+                    <p className="text-green-800 text-center font-medium">
+                      ¡Mensaje enviado exitosamente! Te contactaremos pronto.
+                    </p>
+                  </motion.div>
+                )}
+                
+                {submitStatus === 'error' && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-4 bg-red-50 border border-red-200 rounded-lg"
+                  >
+                    <p className="text-red-800 text-center font-medium">
+                      Error enviando el mensaje. Por favor, intenta de nuevo.
+                    </p>
+                  </motion.div>
+                )}
               </form>
             </motion.div>
           </section>
