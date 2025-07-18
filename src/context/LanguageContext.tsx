@@ -99,7 +99,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.contact': 'Contacto',
     
     // Página principal
-    'hero.title': 'Implementamos y damos soporte a productos bancarios y de procesamiento',
+    'hero.title': 'Productos bancarios y de procesamiento',
     'hero.subtitle': 'Venta, desarrollo, implementación y soporte de software para productos de procesamiento y pago.',
     'hero.cta': 'Comenzar',
     'services.title': 'Nuestros Servicios',
@@ -172,7 +172,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.contact': 'Contato',
     
     // Página principal
-    'hero.title': 'Implementamos e apoiamos produtos bancários e de processamento',
+    'hero.title': 'Produtos bancários e de processamento',
     'hero.subtitle': 'Venda, desenvolvimento, implementação e suporte de software para produtos de processamento e pagamento.',
     'hero.cta': 'Começar',
     'services.title': 'Nossos Serviços',
