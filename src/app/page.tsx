@@ -1,14 +1,18 @@
 'use client'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { sendContactEmail } from '@/lib/emailjs'
+import { useLanguage } from '@/context/LanguageContext'
+import LanguageSwitch from '@/components/LanguageSwitch'
 
 export default function Home() {
   const [activeNav, setActiveNav] = useState('Home')
+  const [isLanguageReady, setIsLanguageReady] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   
   // Estados para el formulario de contacto
   const [formData, setFormData] = useState({
@@ -20,22 +24,23 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null)
 
+  // Use translation keys for service data
   const services = [
     {
-      title: "Processing Services",
-      description: "Cards and payment processing services depending on your licenses and region: cards issuing and acquiring programs, ATM and POS networks processing, e-commerce processing, crypto currencies operations processing."
+      titleKey: "services.processing.title",
+      descriptionKey: "services.processing.description"
     },
     {
-      title: "Consulting Services",
-      description: "MasterCard and VISA Membership (Business plan and Technological scenario), Payment system organization, Processing center and Chip bureau/ CV creation, PCI DSS documentation, ATM and POS networks, e-commerce projects."
+      titleKey: "services.consulting.title",
+      descriptionKey: "services.consulting.description"
     },
     {
-      title: "Software as a Service",
-      description: "Providing our software as a service [SaaS] without license purchase and without license fees."
+      titleKey: "services.saas.title",
+      descriptionKey: "services.saas.description"
     },
     {
-      title: "Software Services",
-      description: "Software sale, development, implementation and support for processing and payment products."
+      titleKey: "services.software.title",
+      descriptionKey: "services.software.description"
     }
   ]
 
@@ -76,6 +81,24 @@ export default function Home() {
     }
   }
 
+  // Obtener el contexto de idioma
+  const { t, language } = useLanguage()
+  
+  // Marcar que el idioma está listo cuando se carga
+  useEffect(() => {
+    console.log('Idioma cargado en el componente Home:', language)
+    setIsLanguageReady(true)
+  }, [language])
+
+  // Mostrar un mensaje de carga mientras se inicializa
+  if (!isLanguageReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-xl">Cargando...</div>
+      </div>
+    )
+  }
+  
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -86,41 +109,138 @@ export default function Home() {
           transition={{ duration: 0.5 }}
         >
           <div className="text-2xl font-semibold">StreamPay</div>
-          <nav className="hidden md:flex space-x-8">
-            {['Home', 'Services'].map((item) => (
+          <div className="flex items-center gap-6">
+            {/* Menu para dispositivos medianos y grandes */}
+            <nav className="hidden md:flex space-x-8">
               <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className={`text-sm ${activeNav === item ? 'font-medium' : 'text-gray-500 hover:text-gray-900'}`}
-                onClick={() => setActiveNav(item)}
+                href="#home"
+                className={`text-sm ${activeNav === 'Home' ? 'font-medium' : 'text-gray-500 hover:text-gray-900'}`}
+                onClick={() => setActiveNav('Home')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {item}
+                {t('nav.home')}
               </motion.a>
-            ))}
-            <motion.a
-              href="/griffin"
-              className="text-sm text-gray-500 hover:text-gray-900"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              <motion.a
+                href="#services"
+                className={`text-sm ${activeNav === 'Services' ? 'font-medium' : 'text-gray-500 hover:text-gray-900'}`}
+                onClick={() => setActiveNav('Services')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('nav.services')}
+              </motion.a>
+              <motion.a
+                href="/griffin"
+                className="text-sm text-gray-500 hover:text-gray-900"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('nav.griffin')}
+              </motion.a>
+              <motion.a
+                href="#about"
+                className={`text-sm ${activeNav === 'About' ? 'font-medium' : 'text-gray-500 hover:text-gray-900'}`}
+                onClick={() => setActiveNav('About')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('nav.about')}
+              </motion.a>
+              <motion.a
+                href="#contact"
+                className={`text-sm ${activeNav === 'Contact' ? 'font-medium' : 'text-gray-500 hover:text-gray-900'}`}
+                onClick={() => setActiveNav('Contact')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('nav.contact')}
+              </motion.a>
+            </nav>
+
+            {/* Botón de menú hamburguesa para móviles */}
+            <button 
+              className="md:hidden text-gray-500 hover:text-gray-900"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
             >
-              Griffin
-            </motion.a>
-            {['About', 'Contact'].map((item) => (
-              <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className={`text-sm ${activeNav === item ? 'font-medium' : 'text-gray-500 hover:text-gray-900'}`}
-                onClick={() => setActiveNav(item)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {item}
-              </motion.a>
-            ))}
-          </nav>
+              {!mobileMenuOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+            </button>
+            
+            <LanguageSwitch />
+          </div>
         </motion.header>
+
+        {/* Menú móvil desplegable */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden bg-white shadow-lg rounded-lg mt-2 overflow-hidden"
+            >
+              <nav className="flex flex-col p-4">
+                <a
+                  href="#home"
+                  className={`py-2 px-3 text-sm rounded-md ${activeNav === 'Home' ? 'font-medium bg-gray-100' : 'text-gray-500 hover:bg-gray-50'}`}
+                  onClick={() => {
+                    setActiveNav('Home')
+                    setMobileMenuOpen(false)
+                  }}
+                >
+                  {t('nav.home')}
+                </a>
+                <a
+                  href="#services"
+                  className={`py-2 px-3 mt-1 text-sm rounded-md ${activeNav === 'Services' ? 'font-medium bg-gray-100' : 'text-gray-500 hover:bg-gray-50'}`}
+                  onClick={() => {
+                    setActiveNav('Services')
+                    setMobileMenuOpen(false)
+                  }}
+                >
+                  {t('nav.services')}
+                </a>
+                <a
+                  href="/griffin"
+                  className="py-2 px-3 mt-1 text-sm rounded-md text-gray-500 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('nav.griffin')}
+                </a>
+                <a
+                  href="#about"
+                  className={`py-2 px-3 mt-1 text-sm rounded-md ${activeNav === 'About' ? 'font-medium bg-gray-100' : 'text-gray-500 hover:bg-gray-50'}`}
+                  onClick={() => {
+                    setActiveNav('About')
+                    setMobileMenuOpen(false)
+                  }}
+                >
+                  {t('nav.about')}
+                </a>
+                <a
+                  href="#contact"
+                  className={`py-2 px-3 mt-1 text-sm rounded-md ${activeNav === 'Contact' ? 'font-medium bg-gray-100' : 'text-gray-500 hover:bg-gray-50'}`}
+                  onClick={() => {
+                    setActiveNav('Contact')
+                    setMobileMenuOpen(false)
+                  }}
+                >
+                  {t('nav.contact')}
+                </a>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <main>
           {/* Hero Section */}
@@ -162,8 +282,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  We implement and support<br /> processing and banking products
-                  {/* Real Time<br />Payments */}
+                  {t('hero.title')}
                 </motion.h1>
                 <motion.p 
                   className="max-w-md mx-auto text-xl text-gray-600 mb-8 text-center"
@@ -171,8 +290,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  Software sale, development, implementation and support for processing and payment products.
-                  
+                  {t('hero.subtitle')}
                 </motion.p>
                 <motion.div 
                   className="text-center"
@@ -184,7 +302,7 @@ export default function Home() {
                     onClick={scrollToContact}
                     className="bg-black text-white hover:bg-gray-800 rounded-full px-8 py-3 text-lg font-medium"
                   >
-                    Get Started
+                    {t('hero.cta')}
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
@@ -203,7 +321,7 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              Our Services
+              {t('services.title')}
             </motion.h2>
             <div className="grid md:grid-cols-2 gap-8">
               {services.map((service, index) => (
@@ -216,10 +334,10 @@ export default function Home() {
                 >
                   <Card className="bg-white">
                     <CardHeader>
-                      <CardTitle className="text-2xl font-bold">{service.title}</CardTitle>
+                      <CardTitle className="text-2xl font-bold">{t(service.titleKey)}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-600">{service.description}</p>
+                      <p className="text-gray-600">{t(service.descriptionKey)}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -237,7 +355,7 @@ export default function Home() {
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                About StreamPay
+                {t('about.title')}
               </motion.h2>
               <motion.p 
                 className="text-xl text-gray-600 mb-8 text-center"
@@ -246,18 +364,7 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
               > 
-                With StreamPay Processing solutions we accumulated 25 years experience of our team with MasterCard and VISA projects implementation for banks and financial institutions around the world.
-
-
-{/* In 1989 we start our history with a CardCenter MasterCard/ Europay Int. MSP creation in Moscow, with a first international MasterCard card issuing in post URSS territory.
-
-In 1994 we established first ATM network and connected first POS terminal in the Russian Federation. */}
-
-
-
-{/* ALFEBA Processing solutions is presented by StreamPay S.A. with a headquarter in Montevideo, Uruguay. */}
-
-                {/* StreamPay is a cutting-edge financial technology company dedicated to revolutionizing the way businesses handle payments and banking. Our mission is to provide seamless, efficient, and secure financial solutions that empower businesses to thrive in the digital economy. */}
+                {t('about.experience')}
               </motion.p>
               <motion.p 
                 className="text-xl text-gray-600 mb-8 text-center"
@@ -266,7 +373,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                From the beginning of nineties of the IX we work under the Third Party processing centers creation, Banks-principal members of the MasterCard and VISA payment system licensing, ATM and POS networks organization and processing.
+                {t('about.history')}
                 </motion.p>
                 <motion.p 
                 className="text-xl text-gray-600 mb-8 text-center"
@@ -275,7 +382,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                Since 1994 we processed more than 50 banks principal members of VISA and MasterCard, like ABN AMRO AO, Dresdner bank AO, GarantiBank AO and other banks and financial institutions in America, Europe and Asia.                
+                {t('about.clients')}
                 </motion.p> 
                 <motion.p 
                 className="text-xl text-gray-600 mb-8 text-center"
@@ -284,7 +391,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                Since our foundation we were improving our development strategy, changing our brands and trademarks. The basis of the business was a multi banking processing platform, from which the e-commerce platform was born about ten years ago.
+                {t('about.evolution')}
               </motion.p> 
               <motion.p 
                 className="text-xl text-gray-600 mb-8 text-center"
@@ -293,7 +400,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 transition={{ duration: 0.5, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                Since 2010 we started implementing our solutions with AWS AMAZON PCI DSS certified cloud, decreasing implementation costs for our customers and accelerating the implementation process.
+                {t('about.technology')}
               </motion.p>
             </div>
           </section>
@@ -307,7 +414,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              Contact Us
+              {t('contact.title')}
             </motion.h2>
             <motion.div 
               className="max-w-md mx-auto"
@@ -320,7 +427,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 <Input 
                   type="text" 
                   name="name"
-                  placeholder="Your Name" 
+                  placeholder={t('contact.name')} 
                   value={formData.name}
                   onChange={handleInputChange}
                   required
@@ -329,7 +436,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 <Input 
                   type="email" 
                   name="email"
-                  placeholder="Your Email" 
+                  placeholder={t('contact.email')} 
                   value={formData.email}
                   onChange={handleInputChange}
                   required
@@ -337,7 +444,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                 />
                 <Textarea 
                   name="message"
-                  placeholder="Your Message" 
+                  placeholder={t('contact.message')} 
                   value={formData.message}
                   onChange={handleInputChange}
                   required
@@ -348,7 +455,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                   disabled={isSubmitting}
                   className="w-full bg-black text-white hover:bg-gray-800 rounded-full py-3 text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? t('contact.sending') : t('contact.submit')}
                 </Button>
                 
                 {/* Status messages */}
@@ -359,7 +466,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                     className="p-4 bg-green-50 border border-green-200 rounded-lg"
                   >
                     <p className="text-green-800 text-center font-medium">
-                      Message sent successfully! We&apos;ll contact you soon.
+                      {t('contact.success')}
                     </p>
                   </motion.div>
                 )}
@@ -371,7 +478,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
                     className="p-4 bg-red-50 border border-red-200 rounded-lg"
                   >
                     <p className="text-red-800 text-center font-medium">
-                      Error sending message. Please try again.
+                      {t('contact.error')}
                     </p>
                   </motion.div>
                 )}
@@ -387,7 +494,7 @@ In 1994 we established first ATM network and connected first POS terminal in the
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <p>&copy; {new Date().getFullYear()} StreamPay. All rights reserved.</p>
+          <p>{t('griffin.footer').replace('Griffin Research', 'StreamPay')}</p>
         </motion.footer>
       </div>
     </div>

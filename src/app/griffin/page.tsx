@@ -1,10 +1,32 @@
 'use client'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from 'next/link'
+import { useLanguage } from '@/context/LanguageContext'
+import LanguageSwitch from '@/components/LanguageSwitch'
 
 export default function GriffinPage() {
+  const { t, language } = useLanguage()
+  const [isLanguageReady, setIsLanguageReady] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  
+  // Marcar que el idioma está listo cuando se carga
+  useEffect(() => {
+    console.log('Idioma cargado en el componente Griffin:', language)
+    setIsLanguageReady(true)
+  }, [language])
+  
+  // Mostrar un mensaje de carga mientras se inicializa
+  if (!isLanguageReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-xl">Cargando...</div>
+      </div>
+    )
+  }
+  
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,14 +37,83 @@ export default function GriffinPage() {
           transition={{ duration: 0.5 }}
         >
           <Link href="/" className="text-2xl font-semibold">StreamPay</Link>
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">Home</Link>
-            <Link href="/#services" className="text-sm text-gray-500 hover:text-gray-900">Services</Link>
-            <span className="text-sm font-medium">Griffin</span>
-            <Link href="/#about" className="text-sm text-gray-500 hover:text-gray-900">About</Link>
-            <Link href="/#contact" className="text-sm text-gray-500 hover:text-gray-900">Contact</Link>
-          </nav>
+          <div className="flex items-center gap-6">
+            {/* Menu para dispositivos medianos y grandes */}
+            <nav className="hidden md:flex space-x-8">
+              <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">{t('nav.home')}</Link>
+              <Link href="/#services" className="text-sm text-gray-500 hover:text-gray-900">{t('nav.services')}</Link>
+              <span className="text-sm font-medium">{t('nav.griffin')}</span>
+              <Link href="/#about" className="text-sm text-gray-500 hover:text-gray-900">{t('nav.about')}</Link>
+              <Link href="/#contact" className="text-sm text-gray-500 hover:text-gray-900">{t('nav.contact')}</Link>
+            </nav>
+
+            {/* Botón de menú hamburguesa para móviles */}
+            <button 
+              className="md:hidden text-gray-500 hover:text-gray-900"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {!mobileMenuOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+            </button>
+            
+            <LanguageSwitch />
+          </div>
         </motion.header>
+
+        {/* Menú móvil desplegable */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden bg-white shadow-lg rounded-lg mt-2 overflow-hidden"
+            >
+              <nav className="flex flex-col p-4">
+                <Link 
+                  href="/"
+                  className="py-2 px-3 text-sm rounded-md text-gray-500 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('nav.home')}
+                </Link>
+                <Link
+                  href="/#services"
+                  className="py-2 px-3 mt-1 text-sm rounded-md text-gray-500 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('nav.services')}
+                </Link>
+                <span className="py-2 px-3 mt-1 text-sm rounded-md font-medium bg-gray-100">
+                  {t('nav.griffin')}
+                </span>
+                <Link
+                  href="/#about"
+                  className="py-2 px-3 mt-1 text-sm rounded-md text-gray-500 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('nav.about')}
+                </Link>
+                <Link
+                  href="/#contact"
+                  className="py-2 px-3 mt-1 text-sm rounded-md text-gray-500 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('nav.contact')}
+                </Link>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <main>
           {/* Hero Section */}
@@ -64,7 +155,7 @@ export default function GriffinPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  Griffin<br />Digital Bank-in-a-Box
+                  {t('griffin.title')}<br />{t('griffin.subtitle')}
                 </motion.h1>
                 <motion.p 
                   className="max-w-md mx-auto text-xl text-gray-600 mb-8 text-center"
@@ -72,7 +163,7 @@ export default function GriffinPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  Create a seamless payment experience that drives customer engagement, using our end-to-end solution.
+                  {t('griffin.description')}
                 </motion.p>
                 <motion.div 
                   className="text-center"
@@ -82,7 +173,7 @@ export default function GriffinPage() {
                 >
                   <Link href="/#contact">
                     <Button className="bg-black text-white hover:bg-gray-800 rounded-full px-8 py-3 text-lg font-medium">
-                      Get Started
+                      {t('griffin.cta')}
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                       </svg>
@@ -102,7 +193,7 @@ export default function GriffinPage() {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              Product Overview
+              {t('griffin.overview.title')}
             </motion.h2>
             <div className="max-w-4xl mx-auto">
               <motion.p 
@@ -112,7 +203,7 @@ export default function GriffinPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                Digital Bank-in-a-Box refers to a comprehensive solution that enables the rapid launch of a fully functional digital bank. It provides all the necessary components and infrastructure required to establish and operate a digital banking platform quickly and efficiently.
+                {t('griffin.overview.description')}
               </motion.p>
             </div>
           </section>
@@ -388,7 +479,7 @@ export default function GriffinPage() {
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <p>&copy; {new Date().getFullYear()} Griffin Research. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Griffin . All rights reserved.</p>
         </motion.footer>
       </div>
     </div>
