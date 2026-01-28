@@ -156,6 +156,14 @@ export default function Home() {
               >
                 {t('nav.contact')}
               </motion.a>
+              <motion.a
+                href="/privacy-policy"
+                className="text-sm text-gray-500 hover:text-gray-900"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Privacy Policy
+              </motion.a>
             </nav>
 
             {/* Botón de menú hamburguesa para móviles */}
@@ -236,6 +244,13 @@ export default function Home() {
                   }}
                 >
                   {t('nav.contact')}
+                </a>
+                <a
+                  href="/privacy-policy"
+                  className="py-2 px-3 mt-1 text-sm rounded-md text-gray-500 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Privacy Policy
                 </a>
               </nav>
             </motion.div>

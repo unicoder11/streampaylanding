@@ -45,6 +45,7 @@ export default function GriffinPage() {
               <span className="text-sm font-medium">{t('nav.griffin')}</span>
               <Link href="/#about" className="text-sm text-gray-500 hover:text-gray-900">{t('nav.about')}</Link>
               <Link href="/#contact" className="text-sm text-gray-500 hover:text-gray-900">{t('nav.contact')}</Link>
+              <Link href="/privacy-policy" className="text-sm text-gray-500 hover:text-gray-900">Privacy Policy</Link>
             </nav>
 
             {/* Botón de menú hamburguesa para móviles */}
@@ -109,6 +110,13 @@ export default function GriffinPage() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('nav.contact')}
+                </Link>
+                <Link
+                  href="/privacy-policy"
+                  className="py-2 px-3 mt-1 text-sm rounded-md text-gray-500 hover:bg-gray-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Privacy Policy
                 </Link>
               </nav>
             </motion.div>
@@ -430,65 +438,6 @@ export default function GriffinPage() {
                 </motion.div>
               ))}
             </div>
-          </section>
-
-          {/* Privacy Policy */}
-          <section className="py-20 bg-gray-50">
-            <motion.h2 
-              className="text-4xl font-bold mb-12 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              Privacy Policy
-            </motion.h2>
-            <motion.div 
-              className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <div className="space-y-6 text-gray-700">
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">1.</span> Streampay S.A. (hereinafter "Streampay") will only collect information containing personal data from users who provide their consent for it or within the framework of a contractual relationship.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">2.</span> This "Privacy Policy" describes the treatment that "Streampay" will carry out regarding the personal information of its clients or potential clients (jointly the users) who may eventually contract its products or services.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">3.</span> "Streampay" will treat the personal data provided by the users, only for the purpose and in the manner detailed in this Privacy Policy and in accordance with the Uruguayan regulations on Personal Data Protection.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">4.</span> "Streampay" undertakes to use the personal data it receives exclusively for the specific purposes for which the user provides it. The Company reserves the right to process users' personal data for use in connection with other services of the Company or its business partners, always in compliance with this privacy policy and the regulatory framework. For example, credit analysis by third-party business partners if the client so requests.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">5.</span> Likewise, "Streampay" may conduct interviews and usability tests with users through video calls or surveys in order to develop value propositions and evaluate prototypes for its "app" or future developments, so personal data is also processed by these means, although there is no obligation to respond to them.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">6.</span> The data collected in execution of the relationships regulated according to this Privacy Policy may be hosted on its own or outsourced servers, in Uruguay or abroad, as long as the respective jurisdiction has adequate levels of protection.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">7.</span> Additionally, by accepting these terms and conditions, the User expressly authorizes that his/her personal data may also be hosted and processed on servers of "Google Cloud Cluster" located in the "United States of America".
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">8.</span> This Privacy Policy may be modified by "Streampay" at any time, entering into force from the third business day after its publication on the website www.streampay.com. The modifications must be in full compliance with the regulatory framework of Uruguay.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">9.</span> "Streampay" has implemented all necessary security measures to prevent unauthorized third parties from accessing the data. This includes physical security measures and access only by employees or subcontractors who need to access the data for work reasons, who will be subject to confidentiality clauses and professional secrecy obligations, contemplated in the Penal Code.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">10.</span> "Streampay" will protect the personal data provided by "users" by not disclosing them and protecting them from unauthorized access; however, in the event of a court order, administrative order or investigations carried out by duly accredited prosecutors or police, "Streampay" may reveal some of the data in its possession.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">11.</span> The data collected may be incorporated into the CLIENTS Database or other databases that may be generated, which in all cases will be registered with Uruguayan regulator.
-                </p>
-                <p className="text-sm leading-relaxed">
-                  <span className="font-semibold">12.</span> The database is responsible for StreamPay S.A., and the rights of access, modification or deletion may be exercised by contacting (598) 98880143 or by emailing info@streampay.com. The user may also submit, in the same manner, any complaints or suggestions that he or she deems appropriate. If you have any questions or suggestions regarding this website's Privacy Policy, please contact us at (598) 98880143 or by email at info@streampay.com.
-                </p>
-              </div>
-            </motion.div>
           </section>
 
           {/* Call to Action */}
